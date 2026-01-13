@@ -9,8 +9,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // --- 2. NEW ACCOUNT CONFIGURATION ---
-const APP_URL = "https://urbaninvest.onrender.com"; 
-const MEGAPAY_API_KEY = "YOUR_NEW_API_KEY_HERE"; // <--- PUT NEW KEY HERE
+const APP_URL = "https://mloans.onrender.com"; 
+const MEGAPAY_API_KEY = "MGPYzVWZq4SG"; // <--- PUT NEW KEY HERE
 
 // Temporary memory (resets if server restarts)
 const transactionMemory = {};
@@ -24,7 +24,7 @@ app.post('/api/deposit/stk', async (req, res) => {
     const uniqueRef = "LOAN-" + Date.now();
 
     const payload = {
-        api_key: MEGAPAY_API_KEY,
+        api_key: MGPYzVWZq4SG,
         amount: amount,
         msisdn: formattedPhone,
         email: "newtonmulti@gmail.com",
