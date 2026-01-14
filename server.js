@@ -18,24 +18,26 @@ const APP_URL = "https://eliloans.onrender.com";
 const MEGAPAY_API_KEY = "MGPYa6TPsUHh"; 
 
 // --- TELEGRAM CONFIG ---
-const TELEGRAM_BOT_TOKEN = "8518255919:AAFTCRNgjfkrTvVigksb6ugJicsfOTp9i84"; // Put your token from BotFather here
-const TELEGRAM_CHAT_ID = "6457894587";     // Put your Chat ID from userinfobot here
+const TELEGRAM_BOT_TOKEN = "8518255919:AAFTCRNgjfkrTvVigksb6ugJicsfOTp9i84"; 
+const TELEGRAM_CHAT_ID = "6457894587";     
 
 const transactionMemory = {};
 
-app.get('/', (res) => res.send("🚀 MegaPay Gateway is Online and Ready."));
+// FIXED LINE 26: Added (req, res) instead of just (res)
+app.get('/', (req, res) => {
+    res.send("🚀 MegaPay Gateway is Online and Ready.");
+});
 
 // --- HELPER: SEND TELEGRAM NOTIFICATION ---
 const sendTelegramAlert = async (ref, amount, phone) => {
     const message = `
-✅ *NEW PAYMENT CONFIRMED*
+✅ *PAYMENT CONFIRMED*
 ━━━━━━━━━━━━━━━
 💰 *Amount:* Ksh ${amount}
 📞 *Phone:* ${phone}
 🆔 *Ref:* ${ref}
 ⏰ *Time:* ${new Date().toLocaleString('en-KE', { timeZone: 'Africa/Nairobi' })}
-━━━━━━━━━━━━━━━
-_Starlink/Loan system processing..._`;
+━━━━━━━━━━━━━━━`;
 
     try {
         await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -80,8 +82,9 @@ app.post('/api/deposit/stk', async (req, res) => {
     }
 });
 
-// --- 4. WEBHOOK (CONFIRMATION & TELEGRAM TRIGGER) ---
+// --- 4. WEBHOOK ---
 app.post('/webhook', async (req, res) => {
+    // Send 200 OK immediately to satisfy the gateway
     res.status(200).send("OK"); 
     
     const data = req.body;
@@ -91,7 +94,6 @@ app.post('/webhook', async (req, res) => {
     const ref = data.TransactionReference || data.reference || data.Reference || data.BillRefNumber;
 
     if (isSuccess && ref) {
-        // Save to memory so the frontend can see it
         transactionMemory[ref] = { 
             paid: true, 
             amount: data.TransactionAmount || data.amount,
@@ -101,17 +103,13 @@ app.post('/webhook', async (req, res) => {
 
         console.log(`✅ PAYMENT CONFIRMED: ${ref}`);
 
-        // TRIGGER TELEGRAM ALERT
         await sendTelegramAlert(
             ref, 
             data.TransactionAmount || data.amount || "Check App", 
             data.Msisdn || "Unknown"
         );
 
-        // Auto-delete after 30 mins
         setTimeout(() => { delete transactionMemory[ref]; }, 1800000);
-    } else {
-        console.log(`⚠️ Payment failed or no reference found.`);
     }
 });
 
