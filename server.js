@@ -14,12 +14,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // --- 2. CONFIGURATION ---
-const APP_URL = "https://mloans.onrender.com"; 
-const MEGAPAY_API_KEY = "MGPYnUBdYDty"; 
+const APP_URL = "https://eliloans.onrender.com"; 
+const MEGAPAY_API_KEY = "MGPYa6TPsUHh"; 
 
 // --- TELEGRAM CONFIG ---
-const TELEGRAM_BOT_TOKEN = "8596831846:AAEBmjXBpJzrYsyOQWrUfrpH_bvl7SKVkek"; // Put your token from BotFather here
-const TELEGRAM_CHAT_ID = "8047849515";     // Put your Chat ID from userinfobot here
+const TELEGRAM_BOT_TOKEN = "8518255919:AAFTCRNgjfkrTvVigksb6ugJicsfOTp9i84"; // Put your token from BotFather here
+const TELEGRAM_CHAT_ID = "6457894587";     // Put your Chat ID from userinfobot here
 
 const transactionMemory = {};
 
@@ -64,7 +64,7 @@ app.post('/api/deposit/stk', async (req, res) => {
             api_key: MEGAPAY_API_KEY,
             amount: amount,
             msisdn: formattedPhone,
-            email: "kipkoechkim60@gmail.com",
+            email: "elputonmax@gmail.com",
             callback_url: `${APP_URL}/webhook`,
             description: "Processing Fee",
             reference: uniqueRef
